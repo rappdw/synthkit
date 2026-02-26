@@ -4,46 +4,65 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Synthkit is a Bash toolkit for converting AI-generated Markdown (from Claude, Gemini, etc.) into production-ready documents. Four scripts handle the "last-mile" transformation: `md2doc` (Word), `md2email` (clipboard-ready email), `md2html` (HTML), `md2pdf` (PDF).
+Synthkit is a Python package for converting AI-generated Markdown (from Claude, Gemini, etc.) into production-ready documents. It provides a unified CLI (`synthkit doc/email/html/pdf`) and backward-compatible standalone commands (`md2doc`, `md2email`, `md2html`, `md2pdf`). Installable via `uvx synthkit` or `pip install synthkit`.
 
 ## Repository Structure
 
-- **Root**: Conversion scripts (`md2doc`, `md2email`, `md2html`, `md2pdf`)
-- **`prompt-templates/`**: Prompt templates for various AI interaction use cases
+- **`src/synthkit/`**: Python package source
+  - `cli.py` — Click CLI with subcommands and standalone entry points
+  - `base.py` — Shared logic (format building, config discovery, batch processing, pandoc invocation)
+  - `doc.py` — Markdown → Word (.docx) via pandoc
+  - `email.py` — Markdown → clipboard (HTML/RTF, cross-platform via pyperclip)
+  - `html.py` — Markdown → HTML via pandoc
+  - `pdf.py` — Markdown → PDF via pandoc + weasyprint
+- **`pyproject.toml`**: Package config (hatchling build, click+pypandoc_binary+pyperclip+weasyprint deps)
+- **`style.css`**: Default stylesheet bundled with the package
+- **`prompt-templates/`**: Prompt templates for AI interaction use cases
 - **`guidelines/`**: Reference guidelines and standards
 
-## Scripts
+## Development
 
-All scripts are standalone Bash files in the repo root. They share these conventions:
-- `set -u` for strict undefined-variable checking (use `${arr[@]+"${arr[@]}"}` pattern for optional arrays)
-- Pandoc base format: `markdown+lists_without_preceding_blankline` with optional `+hard_line_breaks`
-- `--hard-breaks` flag available on all scripts
-- Mermaid diagram support via `--filter mermaid-filter`
-- Batch processing with SUCCESS_COUNT/FAIL_COUNT tracking (except `md2email` which is single-file)
-- Per-tool config files under `$HOME/.config/<toolname>/`
+```bash
+# Install in development mode
+uv pip install -e .
 
-| Script | Output | Key Dependencies | Config Path |
-|--------|--------|-----------------|-------------|
-| `md2doc` | .docx | pandoc, mermaid-filter | `~/.config/md2doc/reference.docx` |
-| `md2email` | clipboard (RTF) | pandoc, textutil, pbcopy (macOS only) | `~/.config/md2email/style.css` |
-| `md2html` | .html | pandoc | `~/.config/md2html/style.css` |
-| `md2pdf` | .pdf | pandoc, xelatex, eisvogel template | `~/.config/md2pdf/fix-unicode.lua`, `unicode-support.tex` |
+# Run directly
+uv run synthkit html example.md
+uv run md2html example.md
+```
+
+## Architecture
+
+- All converters share `base.py` logic: pandoc format string (`markdown+lists_without_preceding_blankline` ± `hard_line_breaks`), config file discovery under `~/.config/<toolname>/`, batch processing with success/fail counting.
+- Mermaid diagram support is opt-in via `--mermaid` flag (requires `mermaid-filter` installed externally).
+- `email.py` is cross-platform: uses `textutil`+`pbcopy` on macOS for RTF clipboard, falls back to `pyperclip` (HTML) on other platforms.
+- `pdf.py` uses `--pdf-engine=weasyprint` (CSS-styled, no LaTeX needed). Config via `~/.config/md2pdf/style.css`.
+- Entry points defined in `pyproject.toml`: `synthkit` (unified CLI group), plus `md2doc`/`md2email`/`md2html`/`md2pdf` (standalone).
 
 ## Testing
 
-No test framework. Test manually:
+Uses pytest. Tests are in `tests/` with shared fixtures in `conftest.py`.
+
 ```bash
-./md2doc example.md
-./md2html *.md
-./md2pdf example.md
-echo "test" > /tmp/test.md && ./md2email /tmp/test.md
+uv run --extra dev pytest        # run all tests
+uv run --extra dev pytest -v     # verbose
+uv run --extra dev pytest -k base  # run specific module
 ```
 
-Use `bash -x ./md2doc example.md` to debug with trace output.
+Tests use mocking for pandoc/clipboard calls. Integration tests in `test_cli.py::TestIntegration` run actual pandoc via the bundled binary.
 
 ## Key Dependencies
 
-- **Pandoc** (all scripts)
-- **xelatex** + **eisvogel** template (md2pdf)
-- **mermaid-filter** (diagram rendering, all scripts)
-- **textutil** + **pbcopy** (md2email, macOS-only)
+### Python (pip-installed automatically)
+- **click** (CLI framework)
+- **pypandoc_binary** (bundles pandoc binary)
+- **pyperclip** (cross-platform clipboard)
+- **weasyprint** (PDF engine)
+
+### System (required for PDF only)
+- **pango**, **cairo**, **gobject** — required by weasyprint
+  - macOS: `brew install pango`
+  - Ubuntu/Debian: `apt install libpango1.0-dev libcairo2-dev libgdk-pixbuf2.0-dev`
+
+### External (optional)
+- **mermaid-filter** (Mermaid diagram rendering, opt-in via `--mermaid` flag)

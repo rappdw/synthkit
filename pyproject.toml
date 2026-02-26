@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "synthkit"
+version = "0.1.0"
+description = "Convert AI-generated Markdown into production-ready documents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "click",
+    "pypandoc_binary",
+    "pyperclip",
+    "weasyprint",
+]
+
+[project.scripts]
+synthkit = "synthkit.cli:main"
+md2doc = "synthkit.cli:md2doc_cmd"
+md2email = "synthkit.cli:md2email_cmd"
+md2html = "synthkit.cli:md2html_cmd"
+md2pdf = "synthkit.cli:md2pdf_cmd"
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff", "mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+src = ["src"]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+packages = ["synthkit"]
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["pypandoc", "pyperclip"]
+ignore_missing_imports = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/synthkit"]
