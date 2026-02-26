@@ -102,6 +102,7 @@ class TestCheckWeasyprintDeps:
             [], 1, stdout=b"", stderr=b"cannot load library 'libgobject-2.0-0'"
         )
         from synthkit.pdf import _check_weasyprint_deps
+
         with pytest.raises(ConversionError, match="cannot find its system libraries"):
             _check_weasyprint_deps()
 
@@ -112,6 +113,7 @@ class TestCheckWeasyprintDeps:
             [], 1, stdout=b"", stderr=b"cannot load library 'pango'"
         )
         from synthkit.pdf import _check_weasyprint_deps
+
         with pytest.raises(ConversionError, match="cannot find its system libraries"):
             _check_weasyprint_deps()
 
@@ -119,16 +121,19 @@ class TestCheckWeasyprintDeps:
     def test_returns_none_when_deps_ok(self, mock_run):
         mock_run.return_value = subprocess.CompletedProcess([], 0, stdout=b"", stderr=b"")
         from synthkit.pdf import _check_weasyprint_deps
+
         assert _check_weasyprint_deps() is None
 
     @patch("synthkit.pdf.subprocess.run", side_effect=FileNotFoundError)
     def test_returns_none_when_weasyprint_not_found(self, mock_run):
         from synthkit.pdf import _check_weasyprint_deps
+
         assert _check_weasyprint_deps() is None
 
     @patch("synthkit.pdf.subprocess.run", side_effect=subprocess.TimeoutExpired("weasyprint", 10))
     def test_returns_none_on_timeout(self, mock_run):
         from synthkit.pdf import _check_weasyprint_deps
+
         assert _check_weasyprint_deps() is None
 
     @patch("synthkit.pdf._weasyprint_env")
@@ -146,6 +151,7 @@ class TestCheckWeasyprintDeps:
             subprocess.CompletedProcess([], 0, stdout=b"", stderr=b""),
         ]
         from synthkit.pdf import _check_weasyprint_deps
+
         result = _check_weasyprint_deps()
         assert result == fake_env
 
@@ -164,5 +170,6 @@ class TestCheckWeasyprintDeps:
             ),
         ]
         from synthkit.pdf import _check_weasyprint_deps
+
         with pytest.raises(ConversionError, match="cannot find its system libraries"):
             _check_weasyprint_deps()

@@ -9,10 +9,7 @@ from pathlib import Path
 from .base import ConversionError, build_format, config_path, mermaid_args, run_pandoc
 
 _INSTALL_HELP = {
-    "Darwin": (
-        "On macOS, install them with:\n"
-        "  brew install pango"
-    ),
+    "Darwin": ("On macOS, install them with:\n  brew install pango"),
     "Linux": (
         "On Ubuntu/Debian, install them with:\n"
         "  sudo apt install libpango1.0-dev libcairo2-dev libgdk-pixbuf2.0-dev\n"
@@ -21,17 +18,13 @@ _INSTALL_HELP = {
     ),
 }
 
-_WEASYPRINT_DOCS = (
-    "https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation"
-)
+_WEASYPRINT_DOCS = "https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation"
 
 
 def _brew_lib_path() -> str | None:
     """Return Homebrew lib directory if available."""
     try:
-        result = subprocess.run(
-            ["brew", "--prefix"], capture_output=True, timeout=5
-        )
+        result = subprocess.run(["brew", "--prefix"], capture_output=True, timeout=5)
         if result.returncode == 0:
             prefix = result.stdout.decode().strip()
             lib_dir = os.path.join(prefix, "lib")
@@ -52,9 +45,7 @@ def _weasyprint_env() -> dict[str, str] | None:
     env = os.environ.copy()
     existing = env.get("DYLD_FALLBACK_LIBRARY_PATH", "")
     if brew_lib not in existing:
-        env["DYLD_FALLBACK_LIBRARY_PATH"] = (
-            f"{brew_lib}:{existing}" if existing else brew_lib
-        )
+        env["DYLD_FALLBACK_LIBRARY_PATH"] = f"{brew_lib}:{existing}" if existing else brew_lib
     return env
 
 
@@ -63,7 +54,9 @@ def _check_weasyprint_deps() -> dict[str, str] | None:
     env = None
     try:
         result = subprocess.run(
-            ["weasyprint", "--info"], capture_output=True, timeout=10,
+            ["weasyprint", "--info"],
+            capture_output=True,
+            timeout=10,
         )
         if result.returncode != 0:
             stderr = result.stderr.decode(errors="replace")
@@ -73,7 +66,9 @@ def _check_weasyprint_deps() -> dict[str, str] | None:
                 if env:
                     retry = subprocess.run(
                         ["weasyprint", "--info"],
-                        capture_output=True, timeout=10, env=env,
+                        capture_output=True,
+                        timeout=10,
+                        env=env,
                     )
                     if retry.returncode == 0:
                         return env  # libs found with env fix
