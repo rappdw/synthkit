@@ -7,9 +7,15 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
-A toolkit for converting AI-generated Markdown (from Claude, Gemini, etc.) into production-ready documents: Word, HTML, PDF, and clipboard-ready email.
+A "last-mile" toolkit for working with generative AI. Synthkit bridges the gap between raw LLM output and production-ready deliverables through:
 
-## Installation
+- **Document conversion** — Transform AI-generated Markdown into Word, HTML, PDF, or clipboard-ready email
+- **Prompt templates** — Curated templates for structured AI interactions (reports, emails, analysis)
+- **Guidelines** — Reference standards and style guides to steer AI output quality
+
+## Document Conversion
+
+### Installation
 
 ```bash
 # Run directly with uvx (no install needed)
@@ -24,7 +30,7 @@ pip install synthkit
 
 Pandoc is bundled automatically via [`pypandoc_binary`](https://pypi.org/project/pypandoc-binary/) — no separate install needed.
 
-### System dependencies for PDF
+#### System dependencies for PDF
 
 PDF conversion uses [WeasyPrint](https://weasyprint.org/), which requires system libraries:
 
@@ -36,9 +42,9 @@ PDF conversion uses [WeasyPrint](https://weasyprint.org/), which requires system
 
 `doc`, `html`, and `email` commands work without these.
 
-## Usage
+### Usage
 
-### Unified CLI
+#### Unified CLI
 
 ```bash
 synthkit doc report.md           # → report.docx
@@ -54,7 +60,7 @@ synthkit html *.md --hard-breaks
 synthkit html report.md --mermaid
 ```
 
-### Backward-compatible commands
+#### Backward-compatible commands
 
 ```bash
 md2doc report.md
@@ -63,14 +69,14 @@ md2pdf report.md
 md2email report.md
 ```
 
-### Options
+#### Options
 
 | Flag | Description |
 |------|-------------|
 | `--hard-breaks` | Preserve line breaks from source markdown |
 | `--mermaid` | Enable Mermaid diagram rendering (requires [`mermaid-filter`](https://github.com/raghur/mermaid-filter)) |
 
-## Configuration
+### Configuration
 
 Each converter looks for optional config files under `~/.config/<toolname>/`:
 
@@ -80,6 +86,16 @@ Each converter looks for optional config files under `~/.config/<toolname>/`:
 | `email` | `~/.config/md2email/style.css` |
 | `html` | `~/.config/md2html/style.css` |
 | `pdf` | `~/.config/md2pdf/style.css` |
+
+## Prompt Templates
+
+The `prompt-templates/` directory contains curated prompt templates for structured AI interactions. These are optimized for Markdown-first responses to ensure compatibility with the document conversion tools.
+
+Copy the contents of any template into your LLM of choice (Claude, Gemini, ChatGPT, etc.) to get consistently structured output ready for conversion.
+
+## Guidelines
+
+The `guidelines/` directory contains reference standards and style guides that can be provided as context to AI models to steer output quality and consistency.
 
 ## Testing
 
