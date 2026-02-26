@@ -72,12 +72,20 @@ jobs:
         run: uv python install 3.12
 
       - name: Run tests with coverage
-        run: uv run --extra dev pytest --cov=synthkit --cov-report=xml --cov-report=term
+        run: |
+          uv run --extra dev pytest --cov=synthkit --cov-report=term | tee coverage-output.txt
+          COVERAGE=$(grep '^TOTAL' coverage-output.txt | awk '{print $NF}' | tr -d '%')
+          echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Update coverage badge
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
-          file: ./coverage.xml
-          fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          filename: synthkit-coverage.json
+          label: coverage
+          message: ${{ env.COVERAGE }}%
+          valColorRange: ${{ env.COVERAGE }}
+          minColorRange: 50
+          maxColorRange: 100

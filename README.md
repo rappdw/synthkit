@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/rappdw/synthkit/actions/workflows/tests.yml/badge.svg)](https://github.com/rappdw/synthkit/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/rappdw/synthkit/graph/badge.svg)](https://codecov.io/gh/rappdw/synthkit)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/rappdw/COVERAGE_GIST_ID/raw/synthkit-coverage.json)](https://github.com/rappdw/synthkit/actions/workflows/tests.yml)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
