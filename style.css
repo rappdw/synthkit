@@ -1,0 +1,21 @@
+body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; color: #000000; line-height: 1.4; }
+
+/* Headers */
+h1 { font-size: 16pt; color: #2E74B5; border-bottom: 1px solid #c0c0c0; padding-bottom: 5px; margin-top: 20px; }
+h2 { font-size: 13pt; color: #2E74B5; margin-top: 15px; }
+
+/* Lists - The Critical Fix for Outlook */
+ul, ol { margin-top: 10px; margin-bottom: 10px; padding-left: 30px; }
+li { margin-bottom: 5px; }
+
+/* Code Blocks */
+code { background-color: #f4f4f4; padding: 2px 4px; font-family: Consolas, monospace; border-radius: 3px; }
+pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow-x: auto; }
+
+/* Quotes */
+blockquote { border-left: 4px solid #2E74B5; margin-left: 0; padding-left: 15px; color: #555; background-color: #fafafa; padding: 5px 10px; }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; font-weight: bold; }

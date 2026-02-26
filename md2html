@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -u
+
+HARD_BREAKS=false
+
+while [[ $# -gt 0 && "$1" == --* ]]; do
+    case "$1" in
+        --hard-breaks) HARD_BREAKS=true; shift ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    echo "Usage: md2html [--hard-breaks] <input.md> [input2.md ...] or md2html *.md"
+    exit 1
+fi
+
+FAIL_COUNT=0
+SUCCESS_COUNT=0
+
+FORMAT="markdown+lists_without_preceding_blankline"
+if $HARD_BREAKS; then
+    FORMAT="${FORMAT}+hard_line_breaks"
+fi
+
+STYLE_FILE="$HOME/.config/md2html/style.css"
+STYLE_ARGS=()
+if [ -f "$STYLE_FILE" ]; then
+    STYLE_ARGS=(--css="$STYLE_FILE" --self-contained)
+fi
+
+for INPUT_FILE in "$@"; do
+    if [[ ! "$INPUT_FILE" == *.md ]]; then
+        echo "Skipping non-markdown file: $INPUT_FILE"
+        continue
+    fi
+
+    if [ ! -f "$INPUT_FILE" ]; then
+        echo "Warning: File '$INPUT_FILE' not found, skipping."
+        ((FAIL_COUNT++))
+        continue
+    fi
+
+    BASENAME=$(basename "$INPUT_FILE" .md)
+    OUTPUT_FILE="${BASENAME}.html"
+
+    echo "Converting $INPUT_FILE to $OUTPUT_FILE..."
+
+    pandoc "$INPUT_FILE" -f "$FORMAT" -t html -s \
+        "${STYLE_ARGS[@]}" \
+        --filter mermaid-filter \
+        -o "$OUTPUT_FILE"
+
+    if [ $? -eq 0 ]; then
+        echo "Successfully created: $OUTPUT_FILE"
+        ((SUCCESS_COUNT++))
+    else
+        echo "Error: Pandoc failed to generate $OUTPUT_FILE"
+        ((FAIL_COUNT++))
+    fi
+done
+
+echo ""
+echo "Done: $SUCCESS_COUNT succeeded, $FAIL_COUNT failed."
+[ $FAIL_COUNT -gt 0 ] && exit 1
+exit 0

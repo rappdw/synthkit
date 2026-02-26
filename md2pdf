@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -u
+
+HARD_BREAKS=false
+
+while [[ $# -gt 0 && "$1" == --* ]]; do
+    case "$1" in
+        --hard-breaks) HARD_BREAKS=true; shift ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    echo "Usage: md2pdf [--hard-breaks] input.md [input2.md ...] or md2pdf *.md"
+    exit 1
+fi
+
+FAIL_COUNT=0
+SUCCESS_COUNT=0
+
+FORMAT="markdown+lists_without_preceding_blankline"
+if $HARD_BREAKS; then
+    FORMAT="${FORMAT}+hard_line_breaks"
+fi
+
+CONFIG_DIR="$HOME/.config/md2pdf"
+EXTRA_ARGS=()
+if [ -f "$CONFIG_DIR/fix-unicode.lua" ]; then
+    EXTRA_ARGS+=(--lua-filter="$CONFIG_DIR/fix-unicode.lua")
+fi
+if [ -f "$CONFIG_DIR/unicode-support.tex" ]; then
+    EXTRA_ARGS+=(--include-in-header="$CONFIG_DIR/unicode-support.tex")
+fi
+
+for INPUT_FILE in "$@"; do
+    if [[ ! "$INPUT_FILE" == *.md ]]; then
+        echo "Skipping non-markdown file: $INPUT_FILE"
+        continue
+    fi
+
+    if [ ! -f "$INPUT_FILE" ]; then
+        echo "Warning: File '$INPUT_FILE' not found, skipping."
+        ((FAIL_COUNT++))
+        continue
+    fi
+
+    BASENAME=$(basename "$INPUT_FILE" .md)
+    OUTPUT_FILE="${BASENAME}.pdf"
+
+    echo "Converting $INPUT_FILE to $OUTPUT_FILE..."
+
+    pandoc "$INPUT_FILE" -f "$FORMAT" \
+        --pdf-engine=xelatex \
+        --template eisvogel \
+        --syntax-highlighting=idiomatic \
+        --filter mermaid-filter \
+        "${EXTRA_ARGS[@]}" \
+        -o "$OUTPUT_FILE"
+
+    if [ $? -eq 0 ]; then
+        echo "Successfully created: $OUTPUT_FILE"
+        ((SUCCESS_COUNT++))
+    else
+        echo "Error: Pandoc failed to generate $OUTPUT_FILE"
+        ((FAIL_COUNT++))
+    fi
+done
+
+echo ""
+echo "Done: $SUCCESS_COUNT succeeded, $FAIL_COUNT failed."
+[ $FAIL_COUNT -gt 0 ] && exit 1
+exit 0

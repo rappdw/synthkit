@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -u
+
+HARD_BREAKS=false
+
+while [[ $# -gt 0 && "$1" == --* ]]; do
+    case "$1" in
+        --hard-breaks) HARD_BREAKS=true; shift ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    echo "Usage: md2email [--hard-breaks] <filename>"
+    exit 1
+fi
+
+INPUT_FILE="$1"
+
+# Smart file finding: accept with or without .md extension
+if [ ! -f "$INPUT_FILE" ] && [ -f "${INPUT_FILE}.md" ]; then
+    INPUT_FILE="${INPUT_FILE}.md"
+fi
+
+if [ ! -f "$INPUT_FILE" ]; then
+    echo "Error: Could not find file '$1' or '${1}.md'"
+    exit 1
+fi
+
+FORMAT="markdown+lists_without_preceding_blankline"
+if $HARD_BREAKS; then
+    FORMAT="${FORMAT}+hard_line_breaks"
+fi
+
+STYLE_FILE="$HOME/.config/md2email/style.css"
+STYLE_ARGS=()
+if [ -f "$STYLE_FILE" ]; then
+    STYLE_ARGS=(--css="$STYLE_FILE")
+fi
+
+echo "Converting $INPUT_FILE to clipboard..."
+
+HTML=$(pandoc "$INPUT_FILE" -f "$FORMAT" -t html -s \
+    --self-contained \
+    "${STYLE_ARGS[@]}" \
+    --filter mermaid-filter)
+
+if [ $? -ne 0 ]; then
+    echo "Error: Pandoc failed to convert $INPUT_FILE"
+    exit 1
+fi
+
+echo "$HTML" \
+    | textutil -stdin -format html -convert rtf -stdout \
+    | pbcopy
+
+if [ $? -eq 0 ]; then
+    echo "Success! Formatted text copied to clipboard."
+else
+    echo "Error: Failed to copy to clipboard."
+    exit 1
+fi
