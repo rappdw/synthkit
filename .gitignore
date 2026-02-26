@@ -5,3 +5,5 @@ dist/
 build/
 *.pyc
 .venv/
+.coverage
+.pytest_cache/
