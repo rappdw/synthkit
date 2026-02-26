@@ -31,6 +31,8 @@ class TestPdfConvert:
         assert "-o" in args
         assert "test.pdf" in args
         assert "--filter" not in args
+        # env should be None when _check_weasyprint_deps returns None
+        assert mock_pandoc.call_args[1].get("env") is None
 
     @patch("synthkit.pdf._check_weasyprint_deps", _no_dep_check)
     @patch("synthkit.pdf.shutil.which", return_value="/usr/bin/weasyprint")
@@ -80,38 +82,87 @@ class TestPdfConvert:
         with pytest.raises(ConversionError, match="Pandoc failed"):
             convert(tmp_md)
 
+    @patch("synthkit.pdf.shutil.which", return_value="/usr/bin/weasyprint")
+    @patch("synthkit.pdf.config_path", return_value=None)
+    @patch("synthkit.pdf.run_pandoc")
+    def test_passes_env_from_dep_check(self, mock_pandoc, mock_config, mock_which, tmp_md):
+        """When _check_weasyprint_deps returns an env dict, it's passed to run_pandoc."""
+        fake_env = {"DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/lib"}
+        with patch("synthkit.pdf._check_weasyprint_deps", return_value=fake_env):
+            mock_pandoc.return_value = subprocess.CompletedProcess([], 0)
+            convert(tmp_md)
+            assert mock_pandoc.call_args[1]["env"] == fake_env
+
 
 class TestCheckWeasyprintDeps:
+    @patch("synthkit.pdf._weasyprint_env", return_value=None)
     @patch("synthkit.pdf.subprocess.run")
-    def test_raises_on_missing_gobject(self, mock_run, tmp_md):
+    def test_raises_on_missing_gobject(self, mock_run, mock_env):
         mock_run.return_value = subprocess.CompletedProcess(
             [], 1, stdout=b"", stderr=b"cannot load library 'libgobject-2.0-0'"
         )
-        with pytest.raises(ConversionError, match="system dependencies"):
-            from synthkit.pdf import _check_weasyprint_deps
+        from synthkit.pdf import _check_weasyprint_deps
+        with pytest.raises(ConversionError, match="cannot find its system libraries"):
             _check_weasyprint_deps()
 
+    @patch("synthkit.pdf._weasyprint_env", return_value=None)
     @patch("synthkit.pdf.subprocess.run")
-    def test_raises_on_missing_pango(self, mock_run, tmp_md):
+    def test_raises_on_missing_pango(self, mock_run, mock_env):
         mock_run.return_value = subprocess.CompletedProcess(
             [], 1, stdout=b"", stderr=b"cannot load library 'pango'"
         )
-        with pytest.raises(ConversionError, match="system dependencies"):
-            from synthkit.pdf import _check_weasyprint_deps
+        from synthkit.pdf import _check_weasyprint_deps
+        with pytest.raises(ConversionError, match="cannot find its system libraries"):
             _check_weasyprint_deps()
 
     @patch("synthkit.pdf.subprocess.run")
-    def test_passes_when_deps_ok(self, mock_run):
+    def test_returns_none_when_deps_ok(self, mock_run):
         mock_run.return_value = subprocess.CompletedProcess([], 0, stdout=b"", stderr=b"")
         from synthkit.pdf import _check_weasyprint_deps
-        _check_weasyprint_deps()  # should not raise
+        assert _check_weasyprint_deps() is None
 
     @patch("synthkit.pdf.subprocess.run", side_effect=FileNotFoundError)
-    def test_passes_when_weasyprint_not_found(self, mock_run):
+    def test_returns_none_when_weasyprint_not_found(self, mock_run):
         from synthkit.pdf import _check_weasyprint_deps
-        _check_weasyprint_deps()  # should not raise, handled by which check
+        assert _check_weasyprint_deps() is None
 
     @patch("synthkit.pdf.subprocess.run", side_effect=subprocess.TimeoutExpired("weasyprint", 10))
-    def test_passes_on_timeout(self, mock_run):
+    def test_returns_none_on_timeout(self, mock_run):
         from synthkit.pdf import _check_weasyprint_deps
-        _check_weasyprint_deps()  # should not raise
+        assert _check_weasyprint_deps() is None
+
+    @patch("synthkit.pdf._weasyprint_env")
+    @patch("synthkit.pdf.subprocess.run")
+    def test_retries_with_brew_env_on_failure(self, mock_run, mock_env):
+        """When initial check fails but retry with Homebrew env succeeds, returns env."""
+        fake_env = {"DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/lib"}
+        mock_env.return_value = fake_env
+        mock_run.side_effect = [
+            # First call: fails with gobject error
+            subprocess.CompletedProcess(
+                [], 1, stdout=b"", stderr=b"cannot load library 'libgobject-2.0-0'"
+            ),
+            # Second call (retry with env): succeeds
+            subprocess.CompletedProcess([], 0, stdout=b"", stderr=b""),
+        ]
+        from synthkit.pdf import _check_weasyprint_deps
+        result = _check_weasyprint_deps()
+        assert result == fake_env
+
+    @patch("synthkit.pdf._weasyprint_env")
+    @patch("synthkit.pdf.subprocess.run")
+    def test_raises_when_brew_env_retry_also_fails(self, mock_run, mock_env):
+        """When both initial check and retry with Homebrew env fail, raises error."""
+        fake_env = {"DYLD_FALLBACK_LIBRARY_PATH": "/opt/homebrew/lib"}
+        mock_env.return_value = fake_env
+        mock_run.side_effect = [
+            subprocess.CompletedProcess(
+                [], 1, stdout=b"", stderr=b"cannot load library 'libgobject-2.0-0'"
+            ),
+            subprocess.CompletedProcess(
+                [], 1, stdout=b"", stderr=b"cannot load library 'libgobject-2.0-0'"
+            ),
+        ]
+        from synthkit.pdf import _check_weasyprint_deps
+        with pytest.raises(ConversionError, match="cannot find its system libraries"):
+            _check_weasyprint_deps()

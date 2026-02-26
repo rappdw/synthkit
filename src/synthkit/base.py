@@ -36,8 +36,10 @@ def get_pandoc_bin() -> str:
     return str(pypandoc.get_pandoc_path())
 
 
-def run_pandoc(args: list[str]) -> subprocess.CompletedProcess[bytes]:
-    return subprocess.run([get_pandoc_bin(), *args], capture_output=False)
+def run_pandoc(
+    args: list[str], env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run([get_pandoc_bin(), *args], capture_output=False, env=env)
 
 
 def mermaid_args(mermaid: bool) -> list[str]:

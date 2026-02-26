@@ -88,6 +88,7 @@ class TestRunPandoc:
         mock_run.assert_called_once_with(
             ["/usr/bin/pandoc", "-f", "markdown", "-t", "html"],
             capture_output=False,
+            env=None,
         )
 
 
