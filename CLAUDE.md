@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Synthkit is a Python package for converting AI-generated Markdown (from Claude, Gemini, etc.) into production-ready documents. It provides a unified CLI (`synthkit doc/email/html/pdf`) and backward-compatible standalone commands (`md2doc`, `md2email`, `md2html`, `md2pdf`). Installable via `uvx synthkit` or `pip install synthkit`.
+Born from building [Proofpoint Satori](https://www.proofpoint.com/us/products/satori), Synthkit is a Python package for converting AI-generated Markdown (from Claude, Gemini, etc.) into production-ready documents. It provides a unified CLI (`synthkit doc/email/html/pdf`) and backward-compatible standalone commands (`md2doc`, `md2email`, `md2html`, `md2pdf`). Installable via `uvx synthkit` or `pip install synthkit`.
 
 ## Repository Structure
 

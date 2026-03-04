@@ -8,6 +8,8 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
+Synthkit was born from building [Proofpoint Satori](https://www.proofpoint.com/us/products/satori) — a platform that deploys AI agents to scale security operations. When AI generates content at volume, you need tooling to bridge the gap between raw output and what the organization actually needs. Synthkit is that bridge.
+
 A "last-mile" toolkit for working with generative AI. Synthkit bridges the gap between raw LLM output and production-ready deliverables through:
 
 - **Document conversion** — Transform AI-generated Markdown into Word, HTML, PDF, or clipboard-ready email
