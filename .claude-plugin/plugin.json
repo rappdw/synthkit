@@ -1,0 +1,12 @@
+{
+  "name": "synthkit",
+  "version": "0.1.0",
+  "description": "Document synthesis toolkit — guided exploration, markdown to PDF/DOCX/HTML/email conversion",
+  "author": {
+    "name": "rappdw",
+    "url": "https://github.com/rappdw"
+  },
+  "repository": "https://github.com/rappdw/synthkit",
+  "license": "MIT",
+  "keywords": ["documents", "pdf", "docx", "markdown", "synthesis"]
+}

@@ -1,0 +1,13 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "startup",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python3 -c 'import synthkit' 2>/dev/null || echo '{\"feedback\": \"synthkit Python package not found. Run: pip install synthkit\"}'"
+        }
+      ]
+    }
+  ]
+}

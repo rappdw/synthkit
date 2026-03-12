@@ -8,17 +8,16 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
-Synthkit was born from building [Proofpoint Satori](https://www.proofpoint.com/us/products/satori) — a platform that deploys AI agents to scale security operations. When AI generates content at volume, you need tooling to bridge the gap between raw output and what the organization actually needs. Synthkit is that bridge.
+Synthkit was born from building [Satori](https://www.proofpoint.com/us/platform/satori) — a platform that deploys AI agents to scale security operations. When AI generates content at volume, you need tooling to bridge the gap between raw output and what the organization actually needs. Synthkit is that bridge.
 
 A "last-mile" toolkit for working with generative AI. Synthkit bridges the gap between raw LLM output and production-ready deliverables through:
 
 - **Document conversion** — Transform AI-generated Markdown into Word, HTML, PDF, or clipboard-ready email
+- **Structured exploration** — Guided discovery sessions that draw out your domain knowledge before generating anything
 - **Prompt templates** — Curated templates for structured AI interactions (reports, emails, analysis)
 - **Guidelines** — Reference standards and style guides to steer AI output quality
 
-## Document Conversion
-
-### Installation
+## Installation
 
 ```bash
 # Run directly with uvx (no install needed)
@@ -33,7 +32,29 @@ pip install synthkit
 
 Pandoc is bundled automatically via [`pypandoc_binary`](https://pypi.org/project/pypandoc-binary/) — no separate install needed.
 
-#### System dependencies for PDF
+### Claude Code Plugin
+
+Synthkit is also available as a [Claude Code](https://claude.ai/code) plugin, adding skills directly into your coding assistant:
+
+```
+/plugin install synthkit
+```
+
+This gives you slash commands inside Claude Code:
+
+| Command | Description |
+|---------|-------------|
+| `/synthkit:explore-with-me` | Guided exploration — Claude interviews you to structure your thinking before writing anything |
+| `/synthkit:md2pdf` | Convert markdown to PDF |
+| `/synthkit:md2docx` | Convert markdown to Word |
+| `/synthkit:md2html` | Convert markdown to HTML |
+| `/synthkit:md2email` | Convert markdown to clipboard-ready email |
+
+The **explore-with-me** skill is particularly useful for thinking through architecture decisions, incident postmortems, risk assessments, or any situation where you know more than the AI and premature generation would anchor on the wrong framing.
+
+## Document Conversion
+
+### System dependencies for PDF
 
 PDF conversion uses [WeasyPrint](https://weasyprint.org/), which requires system libraries:
 
@@ -115,6 +136,8 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 ## Repository Structure
 
 ```
+├── .claude-plugin/        # Claude Code plugin metadata
+│   └── plugin.json
 ├── .github/workflows/
 │   ├── tests.yml          # CI: test on push/PR to main
 │   └── publish.yml        # CD: publish to PyPI on release
@@ -126,6 +149,14 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   ├── email.py           # Email clipboard conversion
 │   ├── html.py            # HTML conversion
 │   └── pdf.py             # PDF conversion (via WeasyPrint)
+├── skills/                # Claude Code plugin skills
+│   ├── explore-with-me/   # Structured exploration interviews
+│   ├── md2pdf/            # PDF conversion skill
+│   ├── md2docx/           # Word conversion skill
+│   ├── md2html/           # HTML conversion skill
+│   └── md2email/          # Email conversion skill
+├── hooks/                 # Claude Code plugin hooks
+│   └── hooks.json         # SessionStart dependency check
 ├── tests/                 # Test suite (pytest)
 │   ├── conftest.py        # Shared fixtures
 │   ├── test_base.py       # Base module tests
