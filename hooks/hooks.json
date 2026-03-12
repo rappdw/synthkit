@@ -1,13 +1,17 @@
 {
-  "SessionStart": [
-    {
-      "matcher": "startup",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "python3 -c 'import synthkit' 2>/dev/null || echo '{\"feedback\": \"synthkit Python package not found. Run: pip install synthkit\"}'"
-        }
-      ]
-    }
-  ]
+  "description": "Check that synthkit Python package is available",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c 'import synthkit' 2>/dev/null || echo '{\"feedback\": \"synthkit Python package not found. Run: pip install synthkit\"}'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }
