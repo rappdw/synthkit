@@ -16,8 +16,8 @@ description: >
 This skill scaffolds a multi-session structured discovery project by interviewing the user
 and generating a customized `CLAUDE.md` plus working file structure.
 
-The template lives at `${CLAUDE_PLUGIN_ROOT}/prompt-templates/structured-discovery.md`. Read
-it before starting — it defines the sections you need to fill in.
+Before starting, read [references/structured-discovery.md](references/structured-discovery.md)
+— it defines the template sections you need to fill in.
 
 ## How It Works
 

@@ -129,11 +129,11 @@ Both use the same underlying method documented in `skills/explore-with-me/refere
 
 ## Prompt Templates
 
-The `prompt-templates/` directory contains curated templates for structured AI interactions. Copy a template into your project and customize the bracketed placeholders.
+The `prompt-templates/` directory contains pointers to canonical templates maintained alongside their skills. If you're using Claude Code, the skills fill these in for you automatically.
 
-| Template | Purpose |
-|----------|---------|
-| `structured-discovery.md` | Multi-session project scaffolding using the Structured Elicitation method |
+| Template | Canonical source | Claude Code shortcut |
+|----------|-----------------|----------------------|
+| `structured-discovery.md` | `skills/init-discovery/references/` | `/synthkit:init-discovery` |
 
 ## Guidelines
 
