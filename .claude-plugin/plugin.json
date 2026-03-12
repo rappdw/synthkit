@@ -1,7 +1,7 @@
 {
   "name": "synthkit",
-  "version": "0.3.0",
-  "description": "Document synthesis toolkit — guided exploration, markdown to PDF/DOCX/HTML/email conversion",
+  "version": "0.4.0",
+  "description": "Thinking tools and production tools for AI — structured exploration, strategic debate, and document conversion",
   "author": {
     "name": "rappdw",
     "url": "https://github.com/rappdw"

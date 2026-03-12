@@ -10,12 +10,7 @@
 
 Synthkit was born from building [Satori](https://www.proofpoint.com/us/platform/satori) — a platform that deploys AI agents to scale security operations. When AI generates content at volume, you need tooling to bridge the gap between raw output and what the organization actually needs. Synthkit is that bridge.
 
-A "last-mile" toolkit for working with generative AI. Synthkit bridges the gap between raw LLM output and production-ready deliverables through:
-
-- **Document conversion** — Transform AI-generated Markdown into Word, HTML, PDF, or clipboard-ready email
-- **Structured exploration** — Guided discovery sessions that draw out your domain knowledge before generating anything
-- **Prompt templates** — Curated templates for structured AI interactions (reports, emails, analysis)
-- **Guidelines** — Reference standards and style guides to steer AI output quality
+A toolkit for amplifying what you can do with AI. Synthkit combines thinking tools (structured exploration, strategic debate) with production tools (document conversion, project scaffolding) into a single package — usable from the command line, from Claude Code, or both.
 
 ## Installation
 
@@ -40,20 +35,82 @@ Synthkit is also available as a [Claude Code](https://claude.ai/code) plugin, ad
 /plugin install synthkit
 ```
 
-This gives you slash commands inside Claude Code:
+## Skills
 
-| Command | Description |
-|---------|-------------|
-| `/synthkit:explore-with-me` | Guided exploration — Claude interviews you to structure your thinking before writing anything |
-| `/synthkit:init-discovery` | Scaffold a multi-session discovery project — interviews you and generates `CLAUDE.md` + working files |
-| `/synthkit:md2pdf` | Convert markdown to PDF |
-| `/synthkit:md2docx` | Convert markdown to Word |
-| `/synthkit:md2html` | Convert markdown to HTML |
-| `/synthkit:md2email` | Convert markdown to clipboard-ready email |
+Skills are Claude Code slash commands that give Claude specialized capabilities. Install the plugin and invoke them with `/synthkit:<skill-name>`.
 
-The **explore-with-me** skill is particularly useful for thinking through architecture decisions, incident postmortems, risk assessments, or any situation where you know more than the AI and premature generation would anchor on the wrong framing.
+### Thinking Tools
 
-## Document Conversion
+These skills help you think through problems before committing to solutions.
+
+#### `/synthkit:explore-with-me` — Structured Exploration
+
+Claude acts as an interviewer, not a generator. It draws out your domain knowledge through focused questions, structures your thinking, identifies gaps, and pressure-tests assumptions — only writing findings after validating them with you.
+
+**When to use:** You have a decision to make, a problem to diagnose, a risk to assess, or a strategy to shape — and you know more about the situation than the AI does. The exploration typically resolves in a single conversation (5-15 rounds).
+
+**Examples:** "Help me think through whether we should migrate to GraphQL." "I need to figure out why our deploy pipeline keeps breaking." "Let's explore the tradeoffs of hiring contractors vs. full-time."
+
+**Output:** A markdown file with context, key findings, constraints, tensions, and recommendations.
+
+#### `/synthkit:init-discovery` — Discovery Project Scaffolding
+
+Sets up a multi-session exploration project. Claude interviews you about the initiative, then generates a customized `CLAUDE.md` (so future sessions have full context) plus a working file structure for sustained investigation.
+
+**When to use:** The problem is too big for one conversation. You'll be coming back to it over days or weeks, possibly with evolving deliverables and multiple stakeholders. You need Claude to maintain context across sessions.
+
+**Examples:** "Set up a discovery project for our Q3 platform migration." "I need to investigate our incident response process over the next few weeks." "Scaffold an exploration of our pricing strategy."
+
+**Output:** `CLAUDE.md` + working files (`current-state.md`, `problem-analysis.md`, `requirements.md`, `options/`, `decision-log.md`).
+
+#### `/synthkit:boardroom` — Strategic Debate
+
+Spin up a board of AI advisors — real people whose strategic thinking you admire — and have them debate your decision in two rounds. Round 1: each advisor argues their position in parallel. Round 2: they read each other's arguments and fight — naming names, quoting each other, changing votes or doubling down.
+
+Inspired by [Allie K Miller's boardroom concept](https://x.com/alliekmiller/status/2021578555034149188).
+
+**When to use:** You have a high-stakes strategic decision and want to stress-test it from multiple perspectives before committing. Pricing, launches, partnerships, organizational changes, market entry — anything where smart people would disagree.
+
+**Examples:** `/synthkit:boardroom "Should I price this at $25,000 or $50,000?"` `/synthkit:boardroom "How should we launch the new developer tier?"` `/synthkit:boardroom "Should we build or buy our analytics platform?"`
+
+**Output:** A folder with three files:
+- `debate.md` — Full transcript with vote tracker, key tensions, and decision framework
+- `debate.html` — Interactive dashboard with assumption sliders that recalculate projections
+- `debate.pdf` — Print-optimized version for sharing with your team
+
+### Production Tools
+
+These skills convert AI-generated content into deliverable formats.
+
+#### `/synthkit:md2pdf` — Markdown to PDF
+
+Convert markdown files to PDF using pandoc with weasyprint (CSS-based, no LaTeX needed).
+
+**When to use:** You need a polished PDF from a markdown file — reports, proposals, documentation.
+
+**Requires system libraries** (pango, cairo) — see [System Dependencies](#system-dependencies-for-pdf).
+
+#### `/synthkit:md2docx` — Markdown to Word
+
+Convert markdown files to Word (.docx) using pandoc.
+
+**When to use:** You need to share a document with people who work in Word, or you need to use Word's review/comment features.
+
+#### `/synthkit:md2html` — Markdown to HTML
+
+Convert markdown files to standalone HTML using pandoc, with optional CSS styling.
+
+**When to use:** You need a self-contained HTML file — for web publishing, email embedding, or portable viewing.
+
+#### `/synthkit:md2email` — Markdown to Email
+
+Convert a markdown file to formatted email content and copy it to the clipboard. Rich text (RTF) on macOS, HTML elsewhere.
+
+**When to use:** You've drafted an email in markdown and want to paste it into your mail client with formatting intact.
+
+## Document Conversion (CLI)
+
+The conversion tools are also available as standalone CLI commands, independent of Claude Code.
 
 ### System dependencies for PDF
 
@@ -112,30 +169,17 @@ Each converter looks for optional config files under `~/.config/<toolname>/`:
 | `html` | `~/.config/md2html/style.css` |
 | `pdf` | `~/.config/md2pdf/style.css` |
 
-## Structured Exploration
+## Reference Materials
 
-Synthkit includes a method called **Structured Elicitation** for using AI as an interviewer rather than a generator — the human holds domain knowledge, and the AI structures the thinking, identifies gaps, and pressure-tests assumptions before anything gets written.
+### Prompt Templates
 
-There are two ways to use it, depending on scope:
-
-| Approach | When to use | How |
-|----------|-------------|-----|
-| **Skill** (`/synthkit:explore-with-me`) | Single-session exploration — a decision, a diagnosis, a quick risk assessment | Invoke the slash command in Claude Code. Claude runs the session interactively and writes findings when done. |
-| **Skill** (`/synthkit:init-discovery`) | Multi-session initiative — a weeks-long project with multiple stakeholders, evolving deliverables, and a file structure | Invoke the slash command. Claude interviews you about the initiative and generates a customized `CLAUDE.md` plus working file structure. |
-
-Use **explore-with-me** for things you can resolve in one conversation. Use **init-discovery** to set up sustained work where you need Claude to maintain context across sessions and produce multiple evolving documents.
-
-Both use the same underlying method documented in `skills/explore-with-me/references/structured-elicitation.md`.
-
-## Prompt Templates
-
-The `prompt-templates/` directory contains pointers to canonical templates maintained alongside their skills. If you're using Claude Code, the skills fill these in for you automatically.
+The `prompt-templates/` directory contains pointers to canonical templates maintained alongside their skills. If you're using Claude Code, the skills fill these in automatically.
 
 | Template | Canonical source | Claude Code shortcut |
 |----------|-----------------|----------------------|
 | `structured-discovery.md` | `skills/init-discovery/references/` | `/synthkit:init-discovery` |
 
-## Guidelines
+### Guidelines
 
 The `guidelines/` directory contains reference standards and methods that can be provided as context to AI models.
 
@@ -173,6 +217,7 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   ├── html.py            # HTML conversion
 │   └── pdf.py             # PDF conversion (via WeasyPrint)
 ├── skills/                # Claude Code plugin skills
+│   ├── boardroom/         # Strategic debate with AI advisors
 │   ├── explore-with-me/   # Structured exploration interviews
 │   ├── init-discovery/    # Multi-session project scaffolding
 │   ├── md2pdf/            # PDF conversion skill
@@ -190,8 +235,8 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   ├── test_html.py       # HTML converter tests
 │   └── test_pdf.py        # PDF converter tests
 ├── style.css              # Default stylesheet
-├── prompt-templates/      # AI interaction prompt templates
-└── guidelines/            # Reference guidelines
+├── prompt-templates/      # Pointers to canonical templates
+└── guidelines/            # Pointers to canonical references
 ```
 
 ## Dependencies

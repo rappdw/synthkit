@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "synthkit"
-version = "0.3.0"
-description = "Convert AI-generated Markdown into production-ready documents"
+version = "0.4.0"
+description = "Thinking tools and production tools for working with AI — structured exploration, strategic debate, and document conversion"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
