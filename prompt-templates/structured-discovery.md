@@ -3,7 +3,7 @@
 <!-- STRUCTURED DISCOVERY TEMPLATE
      Copy this file, fill in bracketed placeholders, and use as your CLAUDE.md.
      The opening prompt at the bottom kicks off the session.
-     See guidelines/structured-elicitation.md for the method behind this template.
+     See skills/explore-with-me/references/structured-elicitation.md for the method behind this template.
 -->
 
 ## Initiative Overview

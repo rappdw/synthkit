@@ -45,6 +45,7 @@ This gives you slash commands inside Claude Code:
 | Command | Description |
 |---------|-------------|
 | `/synthkit:explore-with-me` | Guided exploration — Claude interviews you to structure your thinking before writing anything |
+| `/synthkit:init-discovery` | Scaffold a multi-session discovery project — interviews you and generates `CLAUDE.md` + working files |
 | `/synthkit:md2pdf` | Convert markdown to PDF |
 | `/synthkit:md2docx` | Convert markdown to Word |
 | `/synthkit:md2html` | Convert markdown to HTML |
@@ -111,15 +112,37 @@ Each converter looks for optional config files under `~/.config/<toolname>/`:
 | `html` | `~/.config/md2html/style.css` |
 | `pdf` | `~/.config/md2pdf/style.css` |
 
+## Structured Exploration
+
+Synthkit includes a method called **Structured Elicitation** for using AI as an interviewer rather than a generator — the human holds domain knowledge, and the AI structures the thinking, identifies gaps, and pressure-tests assumptions before anything gets written.
+
+There are two ways to use it, depending on scope:
+
+| Approach | When to use | How |
+|----------|-------------|-----|
+| **Skill** (`/synthkit:explore-with-me`) | Single-session exploration — a decision, a diagnosis, a quick risk assessment | Invoke the slash command in Claude Code. Claude runs the session interactively and writes findings when done. |
+| **Skill** (`/synthkit:init-discovery`) | Multi-session initiative — a weeks-long project with multiple stakeholders, evolving deliverables, and a file structure | Invoke the slash command. Claude interviews you about the initiative and generates a customized `CLAUDE.md` plus working file structure. |
+
+Use **explore-with-me** for things you can resolve in one conversation. Use **init-discovery** to set up sustained work where you need Claude to maintain context across sessions and produce multiple evolving documents.
+
+Both use the same underlying method documented in `skills/explore-with-me/references/structured-elicitation.md`.
+
 ## Prompt Templates
 
-The `prompt-templates/` directory contains curated prompt templates for structured AI interactions. These are optimized for Markdown-first responses to ensure compatibility with the document conversion tools.
+The `prompt-templates/` directory contains curated templates for structured AI interactions. Copy a template into your project and customize the bracketed placeholders.
 
-Copy the contents of any template into your LLM of choice (Claude, Gemini, ChatGPT, etc.) to get consistently structured output ready for conversion.
+| Template | Purpose |
+|----------|---------|
+| `structured-discovery.md` | Multi-session project scaffolding using the Structured Elicitation method |
 
 ## Guidelines
 
-The `guidelines/` directory contains reference standards and style guides that can be provided as context to AI models to steer output quality and consistency.
+The `guidelines/` directory contains reference standards and methods that can be provided as context to AI models.
+
+| Guideline | Purpose |
+|-----------|---------|
+| `structured-elicitation.md` | The Structured Elicitation method (canonical source: `skills/explore-with-me/references/`) |
+| `markdown-conventions.md` | Markdown formatting standards for AI-generated content |
 
 ## Testing
 
@@ -151,6 +174,7 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   └── pdf.py             # PDF conversion (via WeasyPrint)
 ├── skills/                # Claude Code plugin skills
 │   ├── explore-with-me/   # Structured exploration interviews
+│   ├── init-discovery/    # Multi-session project scaffolding
 │   ├── md2pdf/            # PDF conversion skill
 │   ├── md2docx/           # Word conversion skill
 │   ├── md2html/           # HTML conversion skill
