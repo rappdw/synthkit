@@ -56,14 +56,12 @@ packages = ["src/synthkit"]
 [tool.hatch.build.targets.wheel.shared-data]
 ".claude-plugin" = "share/synthkit/.claude-plugin"
 "skills" = "share/synthkit/skills"
-"hooks" = "share/synthkit/hooks"
 
 [tool.hatch.build.targets.sdist]
 include = [
     "src/synthkit",
     ".claude-plugin",
     "skills",
-    "hooks",
     "style.css",
     "README.md",
     "LICENSE",

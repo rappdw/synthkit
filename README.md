@@ -224,8 +224,6 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   ├── md2docx/           # Word conversion skill
 │   ├── md2html/           # HTML conversion skill
 │   └── md2email/          # Email conversion skill
-├── hooks/                 # Claude Code plugin hooks
-│   └── hooks.json         # SessionStart dependency check
 ├── tests/                 # Test suite (pytest)
 │   ├── conftest.py        # Shared fixtures
 │   ├── test_base.py       # Base module tests
