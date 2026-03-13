@@ -7,3 +7,4 @@ build/
 .venv/
 .coverage
 .pytest_cache/
+wiki/

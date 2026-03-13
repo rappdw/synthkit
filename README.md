@@ -80,6 +80,18 @@ Inspired by [Allie K Miller's boardroom concept](https://x.com/alliekmiller/stat
 - `debate.html` — Interactive dashboard with assumption sliders that recalculate projections
 - `debate.pdf` — Print-optimized version for sharing with your team
 
+#### `/synthkit:map-the-repo` — Codebase Documentation
+
+Generate a browsable wiki from any codebase. The script scans your repo, extracts architecture, APIs, and module structure via AST analysis, then generates markdown docs and a self-contained HTML site with dark theme, Mermaid diagrams, full-text search, and syntax highlighting.
+
+**When to use:** You need to document a codebase, onboard a new engineer, hand off a repo, or just understand a project's architecture. Works with Python (deep AST analysis), TypeScript, JavaScript, Go, Java, Rust, and more (regex-based extraction).
+
+**Examples:** "Document this repo." "Generate a wiki for onboarding." "Map the architecture of this codebase." "I need to understand this project."
+
+**Output:** A `wiki/` folder with:
+- `docs/*.md` — Markdown documentation (index, architecture, data flows, API reference, glossary, per-module docs)
+- `site/index.html` — Self-contained browsable site (open directly in browser, no build tools needed)
+
 ### Production Tools
 
 These skills convert AI-generated content into deliverable formats.
@@ -222,6 +234,7 @@ Tests run automatically on push/PR to `main` across Python 3.10-3.13 on Linux, m
 │   ├── boardroom/         # Strategic debate with AI advisors
 │   ├── explore-with-me/   # Structured exploration interviews
 │   ├── init-discovery/    # Multi-session project scaffolding
+│   ├── map-the-repo/      # Codebase documentation wiki generator
 │   ├── md2pdf/            # PDF conversion skill
 │   ├── md2docx/           # Word conversion skill
 │   ├── md2html/           # HTML conversion skill
