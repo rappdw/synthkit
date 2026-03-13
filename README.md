@@ -65,7 +65,9 @@ Sets up a multi-session exploration project. Claude interviews you about the ini
 
 #### `/synthkit:boardroom` — Strategic Debate
 
-Spin up a board of AI advisors — real people whose strategic thinking you admire — and have them debate your decision in two rounds. Round 1: each advisor argues their position in parallel. Round 2: they read each other's arguments and fight — naming names, quoting each other, changing votes or doubling down.
+Think of this as a Monte Carlo simulation with intelligence. Traditional Monte Carlo varies the inputs and sees where outputs cluster. Boardroom varies the *mental models* — each advisor is a sample drawn from a different distribution of strategic thinking — and sees where conclusions cluster. When they don't cluster, you understand *why* they diverge. And unlike random sampling, Round 2 is adaptive: the samples communicate, update on each other's reasoning, and change their positions.
+
+Concretely: spin up a board of AI advisors — real people whose strategic thinking you admire — and have them debate your decision in two rounds. Round 1: each advisor argues their position in parallel. Round 2: they read each other's arguments and fight — naming names, quoting each other, changing votes or doubling down. The vote tracker is your convergence metric. The interactive sliders let you run sensitivity analysis after the fact.
 
 Inspired by [Allie K Miller's boardroom concept](https://x.com/alliekmiller/status/2021578555034149188).
 
