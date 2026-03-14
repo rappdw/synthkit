@@ -44,18 +44,17 @@ The script generates:
 This is the critical step. The script produces structure — file listings, function signatures,
 import graphs. You provide understanding.
 
-**Use your LSP capabilities.** You have built-in access to language server features — use them
-to get accurate type information, go-to-definition, find-references, and call hierarchies.
-This is especially valuable for non-Python languages where the script uses regex fallback and
-may miss type inference, generics, or cross-file relationships. LSP gives you the same depth
-of understanding for TypeScript, Go, Rust, and Java that AST parsing gives for Python.
+**Use LSP if available.** If the user has LSP plugins installed (e.g., `pyright-lsp`,
+`typescript-lsp`, `gopls-lsp`), use go-to-definition, find-references, and call hierarchies
+to get accurate type information and cross-file relationships. This is especially valuable for
+non-Python languages where the script uses regex fallback. If LSP is not available, you can
+still enrich effectively by reading the source files directly — it just takes more context.
 
 Read every generated file in `wiki/docs/` and rewrite weak sections:
 
 - **`architecture.md`** — The Mermaid diagram should immediately convey system shape. Add
   prose explaining *why* the system is structured this way, not just *what* the structure is.
-  Note key design decisions and their tradeoffs. Use LSP call hierarchies to verify and
-  enrich the dependency graph.
+  Note key design decisions and their tradeoffs.
 
 - **`data-flows.md`** — Add sequence diagrams for the 2-3 most important flows through the
   system. Explain what triggers each flow and what the end state is. Use go-to-definition
@@ -63,15 +62,13 @@ Read every generated file in `wiki/docs/` and rewrite weak sections:
 
 - **Module docs** (`modules/*.md`) — Each should read like a senior engineer wrote it after
   a day in the code. Explain the module's role in the system, its key abstractions, and any
-  non-obvious behavior. Don't just list functions — explain what problems they solve. Use LSP
-  to verify signatures and find cross-module relationships the script may have missed.
+  non-obvious behavior. Don't just list functions — explain what problems they solve.
 
 - **`glossary.md`** — Add domain-specific terms that a new engineer would need to understand.
   Define them in the context of this specific codebase, not generic definitions.
 
-- **`api-reference.md`** — Use LSP to verify signatures are correct and resolve type aliases.
-  Add usage examples for the most important public APIs. For non-Python languages, LSP type
-  info will be significantly more accurate than what the regex extraction produced.
+- **`api-reference.md`** — Verify signatures are correct. Add usage examples for the most
+  important public APIs.
 
 After enriching the markdown files, regenerate the HTML site to pick up your changes:
 
