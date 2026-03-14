@@ -28,7 +28,53 @@ Before running the script, build context:
   the language, framework, and project type
 - Scan the top-level directory structure to understand the layout
 
-### 2. Run the Script
+### 2. Check LSP Setup
+
+After identifying the project's languages, check whether the corresponding LSP plugins and
+language server binaries are installed. This dramatically improves enrichment quality —
+especially for non-Python languages where the script falls back to regex.
+
+**Language server requirements by language:**
+
+| Language | Binary | Install | Plugin |
+|----------|--------|---------|--------|
+| Python | `pyright-langserver` | `pip install pyright` | `pyright-lsp` |
+| TypeScript/JS | `typescript-language-server` | `npm install -g typescript-language-server typescript` | `typescript-lsp` |
+| Go | `gopls` | `go install golang.org/x/tools/gopls@latest` | `gopls-lsp` |
+| Rust | `rust-analyzer` | See [rust-analyzer.github.io](https://rust-analyzer.github.io) | `rust-analyzer-lsp` |
+| Java | `jdtls` | See [eclipse.org/jdtls](https://projects.eclipse.org/projects/eclipse.jdt.ls) | `jdtls-lsp` |
+| C/C++ | `clangd` | `apt install clangd` / `brew install llvm` | `clangd-lsp` |
+| Kotlin | `kotlin-language-server` | See [github.com/fwcd/kotlin-language-server](https://github.com/fwcd/kotlin-language-server) | `kotlin-lsp` |
+| Swift | `sourcekit-lsp` | Bundled with Xcode / Swift toolchain | `swift-lsp` |
+| PHP | `intelephense` | `npm install -g intelephense` | `php-lsp` |
+| Lua | `lua-language-server` | See [github.com/LuaLS/lua-language-server](https://github.com/LuaLS/lua-language-server) | `lua-lsp` |
+| C# | `csharp-ls` | `dotnet tool install -g csharp-ls` | `csharp-lsp` |
+
+**Check procedure** — for each primary language detected in the repo:
+
+1. Check if the binary is on PATH:
+   ```bash
+   which pyright-langserver 2>/dev/null  # example for Python
+   ```
+
+2. If the binary is missing, offer to install it:
+   > I noticed this is a Python project but `pyright` isn't installed. LSP support
+   > gives me much better type information and cross-file analysis for enriching the docs.
+   > Want me to install it? (`pip install pyright`)
+
+3. Check if the Claude Code LSP plugin is installed by running `/plugin` commands. If the
+   binary is present but the plugin isn't, tell the user:
+   > `pyright` is installed but the Claude Code LSP plugin isn't. Run:
+   > `/plugin install pyright-lsp`
+   > Then we can continue with full code intelligence.
+
+4. If the user declines or installation isn't possible, proceed without LSP — the script's
+   AST/regex analysis plus manual code reading still produces good results.
+
+Only check languages that are actually present in the repo. Don't suggest installing Go
+tooling for a Python-only project.
+
+### 3. Run the Script
 
 ```bash
 python ${CLAUDE_PLUGIN_ROOT}/skills/map-the-repo/scripts/map.py --repo-path . --output-path ./wiki
@@ -44,11 +90,9 @@ The script generates:
 This is the critical step. The script produces structure — file listings, function signatures,
 import graphs. You provide understanding.
 
-**Use LSP if available.** If the user has LSP plugins installed (e.g., `pyright-lsp`,
-`typescript-lsp`, `gopls-lsp`), use go-to-definition, find-references, and call hierarchies
-to get accurate type information and cross-file relationships. This is especially valuable for
-non-Python languages where the script uses regex fallback. If LSP is not available, you can
-still enrich effectively by reading the source files directly — it just takes more context.
+If LSP was set up in step 2, use go-to-definition, find-references, and call hierarchies
+freely as you work — they give you accurate type information and cross-file relationships
+that the script's static analysis may have missed.
 
 Read every generated file in `wiki/docs/` and rewrite weak sections:
 
@@ -57,8 +101,7 @@ Read every generated file in `wiki/docs/` and rewrite weak sections:
   Note key design decisions and their tradeoffs.
 
 - **`data-flows.md`** — Add sequence diagrams for the 2-3 most important flows through the
-  system. Explain what triggers each flow and what the end state is. Use go-to-definition
-  and find-references to trace actual call paths.
+  system. Explain what triggers each flow and what the end state is.
 
 - **Module docs** (`modules/*.md`) — Each should read like a senior engineer wrote it after
   a day in the code. Explain the module's role in the system, its key abstractions, and any
