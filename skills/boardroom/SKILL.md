@@ -12,8 +12,9 @@ description: >
 # Boardroom
 
 Spin up a team of AI advisors — real people whose strategic thinking the user admires — and
-have them debate a decision in two rounds. The result is a folder of deliverables: a markdown
-debate transcript, an interactive HTML with assumption sliders, and a PDF for sharing.
+have them debate a decision. First a discovery round where advisors ask clarifying questions,
+then two debate rounds. The result is a folder of deliverables: a markdown debate transcript,
+an interactive HTML with assumption sliders, and a PDF for sharing.
 
 ## Setup (First Use)
 
@@ -73,6 +74,56 @@ If not, interview them to create a brief one.
 ## Running a Boardroom Session
 
 When the user invokes `/boardroom [question]`, run the full debate:
+
+### Round 0: Discovery (Parallel)
+
+Before the advisors debate, they need to understand the situation deeply. Spin up one agent
+per advisor in parallel. Each agent receives the advisor's profile, business context, and the
+question, then generates **2-3 targeted questions** from their specific worldview.
+
+Instruct each agent:
+
+```
+You are [Name]. Here is your profile:
+[profile]
+
+Here is the business context:
+[business context]
+
+The question before the board is: [question]
+
+Before you debate this, what do you need to know? Generate 2-3 specific questions that
+would sharpen your position. Ask from YOUR perspective and priorities — a pricing hawk
+asks different questions than a platform thinker.
+
+Format each as a single clear question. No preamble, no commentary.
+```
+
+Collect all questions, deduplicate where advisors ask essentially the same thing, and
+present them to the user grouped by theme:
+
+> Before the advisors debate, they'd like some additional context. A few questions:
+>
+> **Market & Positioning**
+> 1. [Question] *(asked by [Name])*
+> 2. [Question] *(asked by [Name] and [Name])*
+>
+> **Economics**
+> 3. [Question] *(asked by [Name])*
+>
+> **Execution**
+> 4. [Question] *(asked by [Name])*
+>
+> Answer as many as you can — skip any that aren't relevant.
+
+After the user responds, fold their answers into the business context that gets passed to
+Rounds 1 and 2. If any answer is surprising or reveals a constraint the advisors wouldn't
+have anticipated, note it explicitly in the context so it shapes their positions.
+
+**Optional follow-up probe:** If the user's answers reveal something unexpected — a
+constraint, a prior failed attempt, a non-obvious stakeholder — spin up a quick second
+pass where 1-2 of the most relevant advisors ask one follow-up question each. Keep this
+tight; don't turn discovery into an interrogation.
 
 ### Round 1: Initial Positions (Parallel)
 
@@ -147,7 +198,10 @@ current directory. Generate three files:
 
 ```markdown
 # Boardroom: [Question]
-*[Date] — [Number] advisors, 2 rounds*
+*[Date] — [Number] advisors, 3 rounds (discovery + 2 debate)*
+
+## Discovery Context
+[Summary of key facts surfaced in Round 0 — the answers that shaped the debate]
 
 ## Vote Tracker
 
