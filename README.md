@@ -8,8 +8,6 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
-Synthkit was born from building [Satori](https://www.proofpoint.com/us/platform/satori) — a platform that deploys AI agents to scale security operations. When AI generates content at volume, you need tooling to bridge the gap between raw output and what the organization actually needs. Synthkit is that bridge.
-
 A toolkit for amplifying what you can do with AI. Synthkit combines thinking tools (structured exploration, strategic debate) with production tools (document conversion, project scaffolding) into a single package — usable from the command line, from Claude Code, or both.
 
 ## Installation
