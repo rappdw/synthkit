@@ -1,11 +1,14 @@
 ---
 name: md2docx
 user-invocable: true
+argument-hint: [file.md ...]
+allowed-tools: Bash(md2doc *), Bash(synthkit doc *), Read, Write
+model: claude-sonnet-4-6
+effort: low
 description: >
   Convert Markdown files to Word (.docx) format using pandoc. Use this skill when the user
   wants to create a Word document from markdown, or says things like "make a docx",
-  "convert to Word", "export as Word", or "/md2docx". Requires the synthkit package to be
-  installed (pip install synthkit).
+  "convert to Word", "export as Word", or "/md2docx".
 ---
 
 # Markdown to Word (.docx)

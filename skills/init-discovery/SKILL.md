@@ -1,6 +1,9 @@
 ---
 name: init-discovery
 user-invocable: true
+disable-model-invocation: true
+argument-hint: [project name]
+allowed-tools: Read, Write, Bash
 description: >
   Scaffold a multi-session structured discovery project. Use this skill when the user wants to
   set up a new exploration initiative, create a CLAUDE.md for a discovery project, or start a

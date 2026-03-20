@@ -1,6 +1,9 @@
 ---
 name: map-the-repo
 user-invocable: true
+disable-model-invocation: true
+argument-hint: [path to repo]
+allowed-tools: Bash, Read, Write, Glob, Grep, Agent
 description: >
   Generate comprehensive documentation and a browsable wiki for any codebase. Use this skill
   whenever the user wants to document a repo, generate a wiki, understand architecture, produce

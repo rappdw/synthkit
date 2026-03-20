@@ -1,11 +1,14 @@
 ---
 name: md2email
 user-invocable: true
+argument-hint: [file.md]
+allowed-tools: Bash(md2email *), Bash(synthkit email *), Read, Write
+model: claude-sonnet-4-6
+effort: low
 description: >
   Convert a Markdown file to clipboard-ready email. Use this skill when the user wants to
   turn markdown into an email they can paste, or says things like "make this an email",
-  "copy as email", "prepare for email", or "/md2email". Requires the synthkit package to be
-  installed (pip install synthkit).
+  "copy as email", "prepare for email", or "/md2email".
 ---
 
 # Markdown to Email

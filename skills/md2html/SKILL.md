@@ -1,11 +1,14 @@
 ---
 name: md2html
 user-invocable: true
+argument-hint: [file.md ...]
+allowed-tools: Bash(md2html *), Bash(synthkit html *), Read, Write
+model: claude-sonnet-4-6
+effort: low
 description: >
   Convert Markdown files to HTML using pandoc. Use this skill when the user wants to create
   an HTML file from markdown, or says things like "make HTML", "convert to HTML",
-  "export as HTML", or "/md2html". Requires the synthkit package to be installed
-  (pip install synthkit).
+  "export as HTML", or "/md2html".
 ---
 
 # Markdown to HTML

@@ -1,11 +1,14 @@
 ---
 name: md2pdf
 user-invocable: true
+argument-hint: [file.md ...]
+allowed-tools: Bash(md2pdf *), Bash(synthkit pdf *), Read, Write
+model: claude-sonnet-4-6
+effort: low
 description: >
   Convert Markdown files to PDF using weasyprint as the PDF engine. Use this skill when the
   user wants to create a PDF from a markdown file, or says things like "make a PDF",
-  "convert to PDF", "export as PDF", or "/md2pdf". Requires the synthkit package to be
-  installed (pip install synthkit).
+  "convert to PDF", "export as PDF", or "/md2pdf".
 ---
 
 # Markdown to PDF

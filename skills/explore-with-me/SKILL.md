@@ -1,6 +1,9 @@
 ---
 name: explore-with-me
 user-invocable: true
+disable-model-invocation: true
+argument-hint: [topic to explore]
+allowed-tools: Read, Write
 description: >
   Structured exploration and discovery through interviewing. Use this skill whenever the user
   wants to think through a problem, explore a topic in depth, investigate root causes, make a
