@@ -1,7 +1,6 @@
 ---
 name: init-discovery
 user-invocable: true
-disable-model-invocation: true
 argument-hint: [project name]
 allowed-tools: Read, Write, Bash
 description: >

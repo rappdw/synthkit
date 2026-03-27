@@ -1,7 +1,6 @@
 ---
 name: ciso-review
 user-invocable: true
-disable-model-invocation: true
 argument-hint: [product or vendor]
 allowed-tools: Read, Write, WebSearch, WebFetch
 model: claude-opus-4-6

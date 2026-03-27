@@ -1,7 +1,6 @@
 ---
 name: boardroom
 user-invocable: true
-disable-model-invocation: true
 argument-hint: [decision to debate]
 allowed-tools: Read, Write, Bash, Agent, WebSearch, WebFetch
 model: claude-opus-4-6

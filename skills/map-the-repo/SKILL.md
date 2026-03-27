@@ -1,7 +1,6 @@
 ---
 name: map-the-repo
 user-invocable: true
-disable-model-invocation: true
 argument-hint: [path to repo]
 allowed-tools: Bash, Read, Write, Glob, Grep, Agent
 description: >
