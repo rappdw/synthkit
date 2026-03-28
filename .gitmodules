@@ -1,0 +1,3 @@
+[submodule "thinkkit"]
+	path = thinkkit
+	url = https://github.com/rappdw/thinkkit.git
