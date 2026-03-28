@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Synthkit is a toolkit for amplifying what you can do with AI. It combines thinking tools (structured exploration, strategic debate) with production tools (document conversion, project scaffolding) into a single package. It provides a unified CLI (`synthkit doc/email/html/pdf`) and backward-compatible standalone commands (`md2doc`, `md2email`, `md2html`, `md2pdf`). Installable via `uvx synthkit` or `pip install synthkit`.
+Synthkit is a Python package for converting AI-generated Markdown into production-ready documents. It provides a unified CLI (`synthkit doc/email/html/pdf`) and backward-compatible standalone commands (`md2doc`, `md2email`, `md2html`, `md2pdf`). Installable via `uvx synthkit` or `pip install synthkit`.
+
+Thinking tools (structured exploration, strategic debate, CISO review, etc.) have moved to the [thinkkit](https://github.com/rappdw/thinkkit) plugin, available as a submodule at `thinkkit/`.
 
 ## Repository Structure
 

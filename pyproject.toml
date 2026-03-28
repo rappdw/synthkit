@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "synthkit"
 version = "0.6.2"
-description = "Thinking tools and production tools for working with AI — structured exploration, strategic debate, and document conversion"
+description = "Production tools for working with AI — Markdown to PDF, DOCX, HTML, and email"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -53,15 +53,9 @@ ignore_missing_imports = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/synthkit"]
 
-[tool.hatch.build.targets.wheel.shared-data]
-".claude-plugin" = "share/synthkit/.claude-plugin"
-"skills" = "share/synthkit/skills"
-
 [tool.hatch.build.targets.sdist]
 include = [
     "src/synthkit",
-    ".claude-plugin",
-    "skills",
     "style.css",
     "README.md",
     "LICENSE",
